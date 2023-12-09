@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+</head>
+
+<body>
+	<form action="api/groups" method="post" enctype="multipart/form-data">
+		name<input type="text" name="name">
+		description<input type="text" name="description">
+		privacyLevel: CLOSED<input type="radio" name="privacyLevel" value="CLOSED">
+		privacyLevel: PRIVATE<input type="radio" name="privacyLevel" value="PRIVATE">
+		privacyLevel: PUBLIC<input type="radio" name="privacyLevel" value="PUBLIC">
+		<input type="file" name="imageFile">
+		<button type="submit" value="submit">submit</button>
+	</form>
+</body>
+
+
+
+</html>
