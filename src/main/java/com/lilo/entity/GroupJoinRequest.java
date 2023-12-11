@@ -33,14 +33,8 @@ public class GroupJoinRequest {
 	@Column(name = "user_id")
 	private int userId;
 
-	@Column(name = "first_name")
-	private String firstName;
-
-	@Column(name = "last_name")
-	private String lastName;
-
-	@Column(name = "request_timestamp")
-	private LocalDateTime requestTimestamp;
+	@Column(name = "timestamp")
+	private LocalDateTime timestamp;
 
 	@Column(name = "decision_timestamp")
 	private LocalDateTime decisionTimestamp;
@@ -49,17 +43,15 @@ public class GroupJoinRequest {
 	@Column(name = "status")
 	private RequestStatus status;
 
-	public GroupJoinRequest(int userId, int groupId, String firstName, String lastName) {
+	public GroupJoinRequest(int userId, int groupId) {
 		this.userId = userId;
 		this.groupId = groupId;
-		this.firstName = firstName;
-		this.lastName = lastName;
 	}
 
 	@Override
 	public String toString() {
 		return "GroupJoinRequest [id=" + id + ", groupId=" + groupId + ", userId=" + userId + ", requestTimestamp="
-				+ requestTimestamp + ", decisionTimestamp=" + decisionTimestamp + ", status=" + status + "]";
+				+ timestamp + ", decisionTimestamp=" + decisionTimestamp + ", status=" + status + "]";
 	}
 
 }

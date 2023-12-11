@@ -34,8 +34,8 @@ public class FriendshipRequestServiceImpl implements FriendshipRequestService {
 	}
 
 	@Override
-	public List<FriendshipRequest> findAllByReceiverId(int receiverId) {
-		List<FriendshipRequest> requests = friendshipRequestRepository.findByReceiverIdAndStatus(receiverId,
+	public List<FriendshipRequest> findAllByRecipientId(int Recipient) {
+		List<FriendshipRequest> requests = friendshipRequestRepository.findByRecipientIdAndStatus(Recipient,
 				RequestStatus.PENDING);
 		return requests;
 	}
@@ -50,9 +50,9 @@ public class FriendshipRequestServiceImpl implements FriendshipRequestService {
 	}
 
 	@Override
-	public Page<FriendshipRequest> findPendingByReceiverId(int receiverId, int pageNumber, int pageSize, Sort sort) {
+	public Page<FriendshipRequest> findPendingByRecipientId(int recipientId, int pageNumber, int pageSize, Sort sort) {
 		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-		Page<FriendshipRequest> page = friendshipRequestRepository.findByReceiverIdAndStatus(receiverId,
+		Page<FriendshipRequest> page = friendshipRequestRepository.findByRecipientIdAndStatus(recipientId,
 				RequestStatus.PENDING, pageable);
 
 		return page;
@@ -64,21 +64,21 @@ public class FriendshipRequestServiceImpl implements FriendshipRequestService {
 	}
 
 	@Override
-	public FriendshipRequest findByIdAndReceiverId(int id, int receiverId) {
+	public FriendshipRequest findByIdAndRecipientId(int id, int recipientId) {
 		FriendshipRequest existingFriendshipRequest = friendshipRequestRepository.findById(id).get();
 
 		if (existingFriendshipRequest != null)
-			if (existingFriendshipRequest.getRecipientId() == receiverId)
+			if (existingFriendshipRequest.getRecipientId() == recipientId)
 				return existingFriendshipRequest;
 			else
-				throw new IllegalArgumentException("requested friendshipReques doesn't match with the receiverId");
+				throw new IllegalArgumentException("requested friendshipRequest doesn't match with the recipientId");
 		else
 			throw new NoSuchElementException("No such element");
 	}
 
 	@Override
-	public void requestFriendship(int senderId, int receiverId) {
-		friendshipRequestRepository.save(new FriendshipRequest(senderId, receiverId));
+	public void requestFriendship(int senderId, int recipientId) {
+		friendshipRequestRepository.save(new FriendshipRequest(senderId, recipientId));
 	}
 
 	@Override

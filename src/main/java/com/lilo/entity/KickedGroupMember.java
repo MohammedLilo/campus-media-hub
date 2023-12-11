@@ -31,7 +31,7 @@ public class KickedGroupMember {
 	@Column(name = "group_id")
 	private int groupId;
 
-	@Column(name = "kick_timestamp")
+	@Column(name = "timestamp")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDateTime timestamp;
 

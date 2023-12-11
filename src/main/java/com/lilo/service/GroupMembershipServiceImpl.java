@@ -24,7 +24,7 @@ public class GroupMembershipServiceImpl implements GroupMembershipService {
 	private GroupPromotionService groupPromotionService;
 
 	public GroupMembershipServiceImpl(GroupMembershipRepository groupMembershipRepository,
-			KickedGroupMemberService kickedGroupMemberService, UserService userService,
+			@Lazy KickedGroupMemberService kickedGroupMemberService, @Lazy UserService userService,
 			@Lazy GroupPromotionService groupPromotionService) {
 		this.groupMembershipRepository = groupMembershipRepository;
 		this.kickedGroupMemberService = kickedGroupMemberService;
@@ -70,8 +70,7 @@ public class GroupMembershipServiceImpl implements GroupMembershipService {
 //	}
 	@Override
 	public void save(int userId, int groupId) {
-		GroupMembership membership = new GroupMembership(userId, groupId, userService.findFirstNameById(userId),
-				userService.findLastNameById(userId));
+		GroupMembership membership = new GroupMembership(userId, groupId);
 
 		membership.setTimestamp(LocalDateTime.now());
 		membership.setRole(GroupRoles.MEMBER);

@@ -54,7 +54,7 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public Group save(Group group) {
-		group.setCreationTimestamp(LocalDateTime.now());
+		group.setTimestamp(LocalDateTime.now());
 		return groupRepository.save(group);
 	}
 

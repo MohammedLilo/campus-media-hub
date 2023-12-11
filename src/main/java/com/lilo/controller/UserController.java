@@ -37,15 +37,14 @@ public class UserController {
 	UsersDTO users(@RequestParam(name = "page", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
 		Page<User> usersPage = userService.findAll(pageNumber, pageSize, Sort.by(Order.desc("registrationTimestamp")));
-		UsersDTO usersDto = new UsersDTO(usersPage.getContent(), usersPage.isLast());
+		return new UsersDTO(usersPage.getContent(), usersPage.isLast());
 
-		return usersDto;
 	}
 
 	@GetMapping("/users/{id}")
 	User getUserById(@PathVariable("id") int id) {
-		User requestedUser = userService.findById(id);
-		return requestedUser;
+		return userService.findById(id);
+
 	}
 
 	@PostMapping("/users")

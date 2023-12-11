@@ -12,14 +12,14 @@ public interface FriendshipRequestService {
 
 	Page<FriendshipRequest> findPendingBySenderId(int senderId, int pageNumber, int pageSize, Sort sort);
 
-	Page<FriendshipRequest> findPendingByReceiverId(int receiverId, int pageNumber, int pageSize, Sort sort);
+	Page<FriendshipRequest> findPendingByRecipientId(int recipientId, int pageNumber, int pageSize, Sort sort);
 
-	FriendshipRequest findByIdAndReceiverId(int id, int receiverId);
+	FriendshipRequest findByIdAndRecipientId(int id, int recipientId);
 
 	FriendshipRequest findById(int id);
 
 	@Transactional
-	void requestFriendship(int senderId, int receiverId);
+	void requestFriendship(int senderId, int recipientId);
 
 	@Transactional
 	void requestFriendship(FriendshipRequest friendshipRequest);
@@ -32,6 +32,6 @@ public interface FriendshipRequestService {
 
 	List<FriendshipRequest> findAllBySenderId(int senderId);
 
-	List<FriendshipRequest> findAllByReceiverId(int receiverId);
+	List<FriendshipRequest> findAllByRecipientId(int recipientId);
 
 }

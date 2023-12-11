@@ -15,7 +15,7 @@ import com.lilo.dto.FriendshipRequestsDTO;
 import com.lilo.entity.FriendshipRequest;
 import com.lilo.service.FriendshipRequestService;
 
-@RestController()
+@RestController
 @RequestMapping("/api")
 public class FriendshipRequestController {
 	private final FriendshipRequestService friendshipRequestService;
@@ -25,10 +25,10 @@ public class FriendshipRequestController {
 	}
 
 	@GetMapping("/friendship-requests")
-	FriendshipRequestsDTO getFriendshipRequests(@RequestParam("receiverId") int receiverId,
+	FriendshipRequestsDTO getFriendshipRequests(@RequestParam("recepientId") int recepientId,
 			@RequestParam(name = "page", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
-		Page<FriendshipRequest> page = friendshipRequestService.findPendingByReceiverId(receiverId, pageNumber,
+		Page<FriendshipRequest> page = friendshipRequestService.findPendingByRecipientId(recepientId, pageNumber,
 				pageSize, Sort.by(Order.desc("requestTimestamp")));
 		return new FriendshipRequestsDTO(page.getContent(), page.isLast());
 

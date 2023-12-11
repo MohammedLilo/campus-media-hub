@@ -33,8 +33,8 @@ public class Group {
 	@Column(name = "description")
 	private String description;
 
-	@Column(name = "creation_timestamp")
-	private LocalDateTime creationTimestamp;
+	@Column(name = "timestamp")
+	private LocalDateTime timestamp;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "privacy_level")
@@ -58,14 +58,14 @@ public class Group {
 		super();
 		this.name = name;
 		this.description = description;
-		this.creationTimestamp = LocalDateTime.now();
+		this.timestamp = LocalDateTime.now();
 		this.privacyLevel = privacyLevel;
 	}
 
 	@Override
 	public String toString() {
 		return "Group [id=" + id + ", name=" + name + ", description=" + description + ", creationTimestamp="
-				+ creationTimestamp + ", privacyLevel=" + privacyLevel + "]";
+				+ timestamp + ", privacyLevel=" + privacyLevel + "]";
 	}
 
 }

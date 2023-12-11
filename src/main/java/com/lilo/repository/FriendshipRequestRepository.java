@@ -13,12 +13,12 @@ public interface FriendshipRequestRepository extends JpaRepository<FriendshipReq
 
 	List<FriendshipRequest> findBySenderIdAndStatus(int senderId, RequestStatus status);
 
-	List<FriendshipRequest> findByReceiverIdAndStatus(int receiverId, RequestStatus status);
+	List<FriendshipRequest> findByRecipientIdAndStatus(int recipientId, RequestStatus status);
 
 	Page<FriendshipRequest> findBySenderIdAndStatus(int senderId, RequestStatus status, Pageable pageable);
 
-	Page<FriendshipRequest> findByReceiverIdAndStatus(int receiverId, RequestStatus status, Pageable pageable);
+	Page<FriendshipRequest> findByRecipientIdAndStatus(int recipientId, RequestStatus status, Pageable pageable);
 
-	FriendshipRequest findBySenderIdAndReceiverId(int senderId, int receiverId);
+	FriendshipRequest findBySenderIdAndRecipientId(int senderId, int recipientId);
 
 }

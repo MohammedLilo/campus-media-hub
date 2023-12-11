@@ -97,11 +97,10 @@ public class GroupJoinRequestServiceImpl implements GroupJoinRequestService {
 		boolean requestExists = groupJoinRequestRepository.existsByUserIdAndGroupIdPending(userId, groupId);
 
 		if (!requestExists) {
-			GroupJoinRequest request = new GroupJoinRequest(userId, groupId, userService.findFirstNameById(userId),
-					userService.findLastNameById(userId));
+			GroupJoinRequest request = new GroupJoinRequest(userId, groupId);
 
 			request.setStatus(RequestStatus.PENDING);
-			request.setRequestTimestamp(LocalDateTime.now());
+			request.setTimestamp(LocalDateTime.now());
 
 			groupJoinRequestRepository.save(request);
 		} else

@@ -35,12 +35,6 @@ public class GroupMembership {
 	@Column(name = "group_id")
 	private int groupId;
 
-	@Column(name = "first_name")
-	private String firstName;
-
-	@Column(name = "last_name")
-	private String lastName;
-
 	@Column(name = "timestamp")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDateTime timestamp;
@@ -49,11 +43,10 @@ public class GroupMembership {
 	@Column(name = "role")
 	private GroupRoles role;
 
-	public GroupMembership(int userId, int groupId, String firstName, String lastName) {
+	public GroupMembership(int userId, int groupId) {
 		this.userId = userId;
 		this.groupId = groupId;
-		this.firstName = firstName;
-		this.lastName = lastName;
+
 
 	}
 
