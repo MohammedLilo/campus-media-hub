@@ -73,7 +73,7 @@ public class GroupMembershipServiceImpl implements GroupMembershipService {
 		GroupMembership membership = new GroupMembership(userId, groupId, userService.findFirstNameById(userId),
 				userService.findLastNameById(userId));
 
-		membership.setMembershipTimestamp(LocalDateTime.now());
+		membership.setTimestamp(LocalDateTime.now());
 		membership.setRole(GroupRoles.MEMBER);
 
 		groupMembershipRepository.save(membership);
@@ -92,13 +92,13 @@ public class GroupMembershipServiceImpl implements GroupMembershipService {
 //	}
 
 	@Override
-	public void promote(int id, int promoterId, GroupRoles groupRole) {
+	public void promote(int id, int promoterId, GroupRoles newRole) {
 		GroupMembership existingMembership = groupMembershipRepository.findById(id).get();
 
 		GroupPromotion groupPromotion = new GroupPromotion(existingMembership.getGroupId(), promoterId,
-				existingMembership.getUserId(), groupRole);
+				existingMembership.getUserId(), newRole);
 
-		existingMembership.setRole(groupRole);
+		existingMembership.setRole(newRole);
 		groupMembershipRepository.save(existingMembership);
 		groupPromotionService.save(groupPromotion);
 	}

@@ -38,7 +38,7 @@ public class GroupPostServiceImpl implements GroupPostService {
 
 	@Override
 	public GroupPost save(GroupPost groupPost) {
-		groupPost.setPostTimestamp(LocalDateTime.now());
+		groupPost.setTimestamp(LocalDateTime.now());
 		return groupPostRepository.save(groupPost);
 	}
 
@@ -51,7 +51,7 @@ public class GroupPostServiceImpl implements GroupPostService {
 	public GroupPost update(int id, GroupPost groupPost) {
 		GroupPost existingGroupPost = groupPostRepository.findById(id).get();
 		if (existingGroupPost != null) {
-			groupPost.setPostTimestamp(existingGroupPost.getPostTimestamp());
+			groupPost.setTimestamp(existingGroupPost.getTimestamp());
 			return groupPostRepository.save(groupPost);
 		} else
 			throw new NoSuchElementException("cannot update a nonexisting element");

@@ -66,7 +66,7 @@ public class BlockServiceImpl implements BlockService {
 	@Override
 	public void save(int userId, int blockedUserId) {
 		Block block = new Block(userId, blockedUserId);
-		block.setBlockTimestamp(LocalDateTime.now());
+//		block.setTimestamp(LocalDateTime.now());
 
 		friendshipService.deleteByUserIdAndFriendId(block.getUserId(), block.getBlockedUserId());
 		blockRepository.save(block);

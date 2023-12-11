@@ -35,8 +35,8 @@ public class GroupComment {
 	@Column(name = "group_id")
 	private int groupId;
 
-	@Column(name = "comment_timestamp")
-	private LocalDateTime commentTimestamp;
+	@Column(name = "timestamp")
+	private LocalDateTime timestamp;
 
 	public GroupComment(String content, int userId, int postId, int groupId) {
 		super();
@@ -44,13 +44,13 @@ public class GroupComment {
 		this.postId = postId;
 		this.userId = userId;
 		this.groupId = groupId;
-		this.commentTimestamp = LocalDateTime.now();
+		this.timestamp = LocalDateTime.now();
 	}
 
 	@Override
 	public String toString() {
 		return "GroupComment [id=" + id + ", content=" + content + ", postId=" + postId + ", userId=" + userId
-				+ ", groupId=" + groupId + ", commentTimestamp=" + commentTimestamp + "]";
+				+ ", groupId=" + groupId + ", commentTimestamp=" + timestamp + "]";
 	}
 
 }

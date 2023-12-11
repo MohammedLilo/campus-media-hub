@@ -30,7 +30,7 @@ public interface GroupMembershipService {
 //	@Transactional
 //	void promote(GroupMembership groupMembership, GroupRoles groupRoles);
 	@Transactional
-	void promote(int id, int promoterId, GroupRoles groupRoles);
+	void promote(int id, int promoterId, GroupRoles newRole);
 
 	@Transactional
 	void kick(GroupMembership groupMembership);

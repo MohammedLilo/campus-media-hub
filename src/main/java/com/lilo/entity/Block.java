@@ -31,15 +31,15 @@ public class Block {
 	@Column(name = "blocked_user_id")
 	private int blockedUserId;
 
-	@Column(name = "block_timestamp")
+	@Column(name = "timestamp")
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-	private LocalDateTime blockTimestamp;
+	private LocalDateTime timestamp;
 
 	public Block(int userId, int blockedUserId) {
 		super();
 		this.userId = userId;
 		this.blockedUserId = blockedUserId;
-		this.blockTimestamp = LocalDateTime.now();
+		this.timestamp = LocalDateTime.now();
 	}
 
 }

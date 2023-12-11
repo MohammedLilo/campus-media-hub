@@ -33,19 +33,19 @@ public class KickedGroupMember {
 
 	@Column(name = "kick_timestamp")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDateTime kickTimestamp;
+	private LocalDateTime timestamp;
 
 	public KickedGroupMember(int userId, int groupId) {
 		super();
 		this.userId = userId;
 		this.groupId = groupId;
-		this.kickTimestamp = LocalDateTime.now();
+		this.timestamp = LocalDateTime.now();
 	}
 
 	@Override
 	public String toString() {
 		return "KickedGroupMember [id=" + id + ", userId=" + userId + ", groupId=" + groupId + ", kickTimestamp="
-				+ kickTimestamp + "]";
+				+ timestamp + "]";
 	}
 
 }

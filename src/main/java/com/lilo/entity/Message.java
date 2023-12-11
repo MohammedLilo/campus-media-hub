@@ -27,8 +27,8 @@ public class Message {
 	@Column(name = "content")
 	private String content;
 
-	@Column(name = "message_timestamp")
-	private LocalDateTime messageTimestamp;
+	@Column(name = "timestamp")
+	private LocalDateTime timestamp;
 
 	@Column(name = "chat_id")
 	private int chatId;
@@ -41,7 +41,7 @@ public class Message {
 
 	public Message(String content, int chatId, int senderId, int recipientId) {
 		this.content = content;
-		this.messageTimestamp = LocalDateTime.now();
+		this.timestamp = LocalDateTime.now();
 		this.senderId = senderId;
 		this.recipientId = recipientId;
 		this.chatId = chatId;
@@ -49,7 +49,7 @@ public class Message {
 
 	@Override
 	public String toString() {
-		return "Message [id=" + id + ", content=" + content + ", messageTimestamp=" + messageTimestamp + ", chatId="
+		return "Message [id=" + id + ", content=" + content + ", messageTimestamp=" + timestamp + ", chatId="
 				+ chatId + ", senderId=" + senderId + ", recipientId=" + recipientId + "]";
 	}
 }

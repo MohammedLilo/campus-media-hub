@@ -41,9 +41,9 @@ public class GroupMembership {
 	@Column(name = "last_name")
 	private String lastName;
 
-	@Column(name = "membership_timestamp")
+	@Column(name = "timestamp")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDateTime membershipTimestamp;
+	private LocalDateTime timestamp;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "role")
@@ -60,6 +60,6 @@ public class GroupMembership {
 	@Override
 	public String toString() {
 		return "GroupMembership [id=" + id + ", userId=" + userId + ", groupId=" + groupId + ", membershipTimestamp="
-				+ membershipTimestamp + ", role=" + role + "]";
+				+ timestamp + ", role=" + role + "]";
 	}
 }

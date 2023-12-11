@@ -39,19 +39,19 @@ public class GroupPromotion {
 	private int promotedUserId;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "promoted_role")
-	private GroupRoles promotedRole;
+	@Column(name = "new_role")
+	private GroupRoles newRole;
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-	@Column(name = "promotion_timestamp")
-	private LocalDateTime promotionTimestamp;
+	@Column(name = "timestamp")
+	private LocalDateTime timestamp;
 
-	public GroupPromotion(int groupId, int promoterUserId, int promotedUserId, GroupRoles promotedRole) {
+	public GroupPromotion(int groupId, int promoterUserId, int promotedUserId, GroupRoles newRole) {
 		this.groupId = groupId;
 		this.promoterUserId = promoterUserId;
 		this.promotedUserId = promotedUserId;
-		this.promotedRole = promotedRole;
-		this.promotionTimestamp = LocalDateTime.now();
+		this.newRole = newRole;
+		this.timestamp = LocalDateTime.now();
 	}
 
 }

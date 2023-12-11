@@ -39,8 +39,8 @@ public class GroupPost {
 	@Column(name = "picture")
 	private String picture;
 
-	@Column(name = "post_timestamp")
-	private LocalDateTime postTimestamp;
+	@Column(name = "timestamp")
+	private LocalDateTime timestamp;
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "post_id")
