@@ -1,5 +1,9 @@
 package com.lilo.entity;
 
+import java.time.LocalDate;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,15 +46,35 @@ public class UserDetail {
 	@Column(name = "profile_picture")
 	private String profilePicture;
 
+	@Column(name = "country")
+	private String country;
+
+	@Column(name = "city")
+	private String city;
+
+	@Column(name = "birth_date")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate birthDate;
+
+	@Column(name = "phone_number")
+	private String phoneNumber;
+
 	public UserDetail(String university, String college, String department, Integer yearOfEnrollment,
-			Integer yearOfGraduation, String biography) {
-		super();
+			Integer yearOfGraduation, String biography, String profilePicture, String country, String city,
+			LocalDate birthDate, String phoneNumber) {
 		this.university = university;
 		this.college = college;
 		this.department = department;
 		this.yearOfEnrollment = yearOfEnrollment;
 		this.yearOfGraduation = yearOfGraduation;
 		this.biography = biography;
+		this.profilePicture = profilePicture;
+		this.country = country;
+		this.city = city;
+		this.birthDate = birthDate;
+		this.phoneNumber = phoneNumber;
 	}
+
+	
 
 }

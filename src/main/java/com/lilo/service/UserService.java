@@ -1,7 +1,5 @@
 package com.lilo.service;
 
-import java.time.LocalDate;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,18 +40,6 @@ public interface UserService {
 
 	@Transactional
 	void updatePassword(User user, String newPassword);
-
-	@Transactional
-	void updateCountry(User user, String newCountry);
-
-	@Transactional
-	void updateCity(User user, String newCity);
-
-	@Transactional
-	void updatePhoneNumber(User user, String newPhoneNumber);
-
-	@Transactional
-	void updateBirthDate(User user, LocalDate newBirthDate);
 
 	@Transactional
 	void updateGender(User user, Genders newGender);

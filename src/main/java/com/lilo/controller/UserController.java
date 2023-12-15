@@ -44,21 +44,21 @@ public class UserController {
 	@GetMapping("/users/{id}")
 	User getUserById(@PathVariable("id") int id) {
 		return userService.findById(id);
-
 	}
 
 	@PostMapping("/users")
-	void registerUser(@ModelAttribute User user) {
+	void registerUser(@ModelAttribute("user") User user, @ModelAttribute(name = "userDetail") UserDetail userDetail) {
 		user.setUserPrivacy(new UserPrivacy(Visibility.ALL, Visibility.NONE, Visibility.NONE));
+		user.setUserDetail(userDetail);
 		userService.save(user);
 	}
 
 	@PutMapping("/users/{id}")
-	void updateUser(@PathVariable("id") int id, @ModelAttribute User user) {
+	void updateUser(@PathVariable("id") int id, @ModelAttribute(name = "user") User user) {
 		userService.update(id, user);
 	}
 
-	@DeleteMapping("users/{id}")
+	@DeleteMapping("/users/{id}")
 	void deleteUser(@PathVariable("id") int id) {
 		userService.deleteById(id);
 		FileUtility.deleteImageFiles(ImagesPaths.PROFILE_PICTURE_FOLDER + "//" + id);
@@ -78,15 +78,15 @@ public class UserController {
 		userService.update(id, user);
 	}
 
-	@PostMapping("/users/{id}/user-privacy")
-	void createUserPrivacy(@PathVariable("id") int id, @ModelAttribute UserPrivacy userPrivacy) {
-		User user = userService.findById(id);
-		user.setUserPrivacy(userPrivacy);
-		userService.update(id, user);
-	}
+//	@PostMapping("/users/{id}/user-privacy")
+//	void createUserPrivacy(@PathVariable("id") int id, @ModelAttribute UserPrivacy userPrivacy) {
+//		User user = userService.findById(id);
+//		user.setUserPrivacy(userPrivacy);
+//		userService.update(id, user);
+//	}
 
 	@PutMapping("/users/{id}/user-privacy")
-	void updateUserPrivacy(@PathVariable("id") int id, @ModelAttribute UserPrivacy userPrivacy) {
+	void updateUserPrivacy(@PathVariable("id") int id, @ModelAttribute("userPrivacy") UserPrivacy userPrivacy) {
 		User user = userService.findById(id);
 		user.setUserPrivacy(userPrivacy);
 		userService.update(id, user);

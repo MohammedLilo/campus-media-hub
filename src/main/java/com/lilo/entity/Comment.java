@@ -28,6 +28,9 @@ public class Comment {
 	@Column(name = "content")
 	private String content;
 
+	@Column(name = "picture")
+	private String picture;
+
 	@Column(name = "user_id")
 	private int userId;
 
@@ -42,15 +45,11 @@ public class Comment {
 //	@JoinColumn(name = "post_id")
 //	private Post post;
 
-	public Comment(String content, int userId, int postId) {
-		this.content = content;
+	public Comment(int userId, int postId, String content, String picture) {
 		this.userId = userId;
 		this.postId = postId;
+		this.content = content;
+		this.picture = picture;
 	}
 
-	@Override
-	public String toString() {
-		return "Comment [id=" + id + ", content=" + content + ", userId=" + userId + ", postId=" + postId
-				+ ", commentTimestamp=" + timestamp + "]";
-	}
 }

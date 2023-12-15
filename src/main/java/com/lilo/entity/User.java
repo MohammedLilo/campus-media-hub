@@ -1,9 +1,6 @@
 package com.lilo.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 import com.lilo.enums.Genders;
 
@@ -50,23 +47,10 @@ public class User {
 	@Column(name = "gender")
 	private Genders gender;
 
-	@Column(name = "country")
-	private String country;
-
-	@Column(name = "city")
-	private String city;
-
-	@Column(name = "birth_date")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate birthDate;
-
-	@Column(name = "phone_number")
-	private String phoneNumber;
-
 	@Column(name = "registration_timestamp")
 	private LocalDateTime registrationTimestamp;
 
-	@OneToOne(cascade = CascadeType.ALL, optional = true)
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_detail_id")
 	private UserDetail userDetail;
 
@@ -94,27 +78,14 @@ public class User {
 //	@JoinColumn(name = "sender_id")
 //	private List<Chat> chats;
 
-	public User(String firstName, String lastName, String email, String password, Genders gender, String country,
-			String city, LocalDate birthDate, String phoneNumber) {
+	public User(String firstName, String lastName, String email, String password, Genders gender) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
 		this.password = password;
 		this.gender = gender;
-		this.country = country;
-		this.city = city;
-		this.birthDate = birthDate;
-		this.phoneNumber = phoneNumber;
 		this.registrationTimestamp = LocalDateTime.now();
-	}
-
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
-				+ ", password=" + password + ", gender=" + gender + ", country=" + country + ", city=" + city
-				+ ", birthDate=" + birthDate + ", phoneNumber=" + phoneNumber + ", registrationTimestamp="
-				+ registrationTimestamp + "]";
 	}
 
 }

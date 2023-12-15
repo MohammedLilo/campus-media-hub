@@ -1,7 +1,7 @@
 package com.lilo.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -16,6 +16,8 @@ import com.lilo.entity.UserPrivacy;
 import com.lilo.enums.Genders;
 import com.lilo.repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -28,43 +30,50 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void save(User user) {
 		user.setRegistrationTimestamp(LocalDateTime.now());
-		userRepository.save(user); 
+		userRepository.save(user);
 	}
- 
+
 	@Override
 	public Page<User> findAll(int pageNumber, int pageSize, Sort sort) {
 		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-		Page<User> page = userRepository.findAll(pageable);
-
-		return page;
+		return userRepository.findAll(pageable);
 	}
 
 	@Override
 	public User findById(int id) {
-		return userRepository.findById(id).get();
+		Optional<User> foundUser = userRepository.findById(id);
+		if (foundUser.isPresent())
+			return foundUser.get();
+		else
+			throw new EntityNotFoundException("No matching user is found.");
 	}
 
 	@Override
 	public User findByEmail(String email) {
-		return userRepository.findByEmail(email);
+		Optional<User> foundUser = userRepository.findByEmail(email);
+		if (foundUser.isPresent())
+			return userRepository.findByEmail(email).get();
+		else
+			throw new NoSuchElementException("no user found for the given email.");
 	}
 
 	@Override
 	public String findFullNameById(int id) {
 		String fullName = userRepository.findFullNameById(id);
-		return fullName;
+		if (fullName != null)
+			return fullName;
+		else
+			throw new EntityNotFoundException();
 	}
 
 	@Override
 	public String findFirstNameById(int id) {
-		String firstName = userRepository.findFirstNameById(id);
-		return firstName;
+		return userRepository.findFirstNameById(id);
 	}
 
 	@Override
 	public String findLastNameById(int id) {
-		String lastName = userRepository.findLastNameById(id);
-		return lastName;
+		return userRepository.findLastNameById(id);
 	}
 
 //	@Override
@@ -87,9 +96,15 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void update(int id, User user) {
-		Optional<User> existingUser = userRepository.findById(id);
-		if (existingUser.isPresent())
+		Optional<User> existingUserOptional = userRepository.findById(id);
+		if (existingUserOptional.isPresent()) {
+			User existingUser = existingUserOptional.get();
+			user.setRegistrationTimestamp(existingUser.getRegistrationTimestamp());
+			user.setUserDetail(existingUser.getUserDetail());
+			user.setUserPrivacy(existingUser.getUserPrivacy());
 			userRepository.save(user);
+		} else
+			throw new EntityNotFoundException("cannot update a non existing user.");
 	}
 
 	@Override
@@ -108,30 +123,6 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updatePassword(User user, String newPassword) {
 		user.setPassword(newPassword);
-		userRepository.save(user);
-	}
-
-	@Override
-	public void updateCountry(User user, String newCountry) {
-		user.setCountry(newCountry);
-		userRepository.save(user);
-	}
-
-	@Override
-	public void updateCity(User user, String newCity) {
-		user.setCity(newCity);
-		userRepository.save(user);
-	}
-
-	@Override
-	public void updatePhoneNumber(User user, String newPhoneNumber) {
-		user.setPhoneNumber(newPhoneNumber);
-		userRepository.save(user);
-	}
-
-	@Override
-	public void updateBirthDate(User user, LocalDate newBirthDate) {
-		user.setBirthDate(newBirthDate);
 		userRepository.save(user);
 	}
 

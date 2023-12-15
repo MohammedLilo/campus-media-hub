@@ -33,28 +33,30 @@ public class PostController {
 	@GetMapping("/posts")
 	PostsDTO findPosts(@RequestParam(name = "page", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
-		Page<Post> page = postService.findAll(pageNumber, pageSize, Sort.by(Order.desc("postTimestamp")));
-		PostsDTO posts = new PostsDTO(page.getContent(), page.isLast());
-
-		return posts;
+		Page<Post> page = postService.findAll(pageNumber, pageSize, Sort.by(Order.desc("timestamp")));
+		return new PostsDTO(page.getContent(), page.isLast());
 	}
 
 	@GetMapping("/posts/{id}")
 	Post getPost(@PathVariable("id") int id) {
-		Post post = postService.findById(id);
-		return post;
+		return postService.findById(id);
 	}
 
 	@PostMapping("/posts")
-	void createPost(@ModelAttribute Post post, @ModelAttribute MultipartFile imageFile) {
+	void createPost(@ModelAttribute(name = "post") Post post,
+			@ModelAttribute(name = "imageFile") MultipartFile imageFile) {
 		Post savedPost = postService.save(post);
 		updatePost(savedPost.getId(), savedPost, imageFile);
 	}
 
 	@PutMapping("/posts/{id}")
-	void updatePost(@PathVariable("id") int id, @ModelAttribute Post post, @ModelAttribute MultipartFile imageFile) {
+	void updatePost(@PathVariable("id") int id, @ModelAttribute(name = "post") Post post,
+			@ModelAttribute(name = "imageFile") MultipartFile imageFile) {
+		post.setTimestamp(postService.findById(id).getTimestamp());
+		
 		String filePath = ImagesPaths.POST_PICTURE_FOLDER + "/" + post.getId();
 		post.setPicture(filePath);
+		
 		postService.update(id, post);
 		FileUtility.saveImage(imageFile, filePath);
 	}

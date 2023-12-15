@@ -40,20 +40,8 @@ public class UserPrivacy {
 
 	public UserPrivacy(Visibility profilePictureVisibility, Visibility phoneNumberVisibility,
 			Visibility emailVisibility) {
-
-		if (profilePictureVisibility == null)
-			this.profilePictureVisibility = Visibility.ALL;
-		else
-			this.profilePictureVisibility = profilePictureVisibility;
-
-		if (phoneNumberVisibility == null)
-			this.phoneNumberVisibility = Visibility.FRIENDS;
-		else
-			this.phoneNumberVisibility = phoneNumberVisibility;
-
-		if (emailVisibility == null)
-			this.emailVisibility = Visibility.FRIENDS;
-		else
-			this.emailVisibility = emailVisibility;
+		this.profilePictureVisibility = profilePictureVisibility;
+		this.phoneNumberVisibility = phoneNumberVisibility;
+		this.emailVisibility = emailVisibility;
 	}
 }

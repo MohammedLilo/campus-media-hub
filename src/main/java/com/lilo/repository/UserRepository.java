@@ -1,14 +1,17 @@
 package com.lilo.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.lilo.entity.User;
 
+
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-	public User findByEmail(String email);
+	public Optional<User> findByEmail(String email);
 
 	@Query("SELECT CONCAT(u.firstName, ' ', u.lastName) AS fullName FROM User u WHERE id= :id")
 	public String findFullNameById(@Param("id") int id);

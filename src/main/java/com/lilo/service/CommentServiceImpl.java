@@ -1,7 +1,6 @@
 package com.lilo.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -14,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.lilo.entity.Comment;
 import com.lilo.repository.CommentRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -21,20 +22,6 @@ public class CommentServiceImpl implements CommentService {
 
 	public CommentServiceImpl(CommentRepository commentRepository) {
 		this.commentRepository = commentRepository;
-	}
-
-	@Override
-	public List<Comment> findAllByUserId(int userId) {
-		List<Comment> comments = commentRepository.findByUserId(userId);
-
-		return comments;
-	}
-
-	@Override
-	public List<Comment> findAllByPostId(int postId) {
-		List<Comment> comments = commentRepository.findByPostId(postId);
-
-		return comments;
 	}
 
 	@Override
@@ -61,16 +48,15 @@ public class CommentServiceImpl implements CommentService {
 			if (existingComment.getPostId() == postId)
 				return existingComment;
 			else
-				throw new IllegalArgumentException("request comment should be related to the specified post");
+				throw new IllegalArgumentException("request comment should be associated with the specified post");
 		else
-			throw new NoSuchElementException("cannot update a nonexisting comment");
-
+			throw new EntityNotFoundException("cannot update a nonexisting comment");
 	}
 
 	@Override
-	public void save(Comment comment) {
+	public Comment save(Comment comment) {
 		comment.setTimestamp(LocalDateTime.now());
-		commentRepository.save(comment);
+		return commentRepository.save(comment);
 	}
 
 	@Override
@@ -82,9 +68,9 @@ public class CommentServiceImpl implements CommentService {
 				comment.setTimestamp(existingComment.getTimestamp());
 				commentRepository.save(comment);
 			} else
-				throw new IllegalArgumentException("request comment should be related to the specified post");
+				throw new IllegalArgumentException("request comment should be associated with the specified post");
 		else
-			throw new NoSuchElementException("cannot update a nonexisting comment");
+			throw new EntityNotFoundException("cannot update a nonexisting comment");
 
 	}
 
@@ -96,10 +82,4 @@ public class CommentServiceImpl implements CommentService {
 		else
 			throw new NoSuchElementException("cannot delete a nonexisting comment");
 	}
-
-	@Override
-	public void delete(Comment comment) {
-		commentRepository.delete(comment);
-	}
-
 }
