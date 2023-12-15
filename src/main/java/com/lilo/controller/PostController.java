@@ -1,5 +1,7 @@
 package com.lilo.controller;
 
+import java.io.IOException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
@@ -46,25 +48,35 @@ public class PostController {
 	void createPost(@ModelAttribute(name = "post") Post post,
 			@ModelAttribute(name = "imageFile") MultipartFile imageFile) {
 		Post savedPost = postService.save(post);
-		updatePost(savedPost.getId(), savedPost, imageFile);
+		if (imageFile != null && !imageFile.isEmpty()) {
+			updatePost(savedPost.getId(), savedPost, imageFile);
+		}
 	}
 
 	@PutMapping("/posts/{id}")
 	void updatePost(@PathVariable("id") int id, @ModelAttribute(name = "post") Post post,
 			@ModelAttribute(name = "imageFile") MultipartFile imageFile) {
 		post.setTimestamp(postService.findById(id).getTimestamp());
-		
 		String filePath = ImagesPaths.POST_PICTURE_FOLDER + "/" + post.getId();
-		post.setPicture(filePath);
 		
+		if (imageFile != null && !imageFile.isEmpty()) {
+			post.setPicture(filePath);
+			try {
+				FileUtility.saveImage(imageFile, filePath);
+			} catch (IOException e) {
+				e.printStackTrace();
+				FileUtility.deleteImageFiles(filePath);
+			}
+		} else {
+			FileUtility.deleteImageFiles(filePath);
+		}
 		postService.update(id, post);
-		FileUtility.saveImage(imageFile, filePath);
 	}
 
 	@DeleteMapping("/posts/{id}")
 	void deletePost(@PathVariable("id") int id) {
 		postService.deleteById(id);
-		FileUtility.deleteImageFiles(ImagesPaths.POST_PICTURE_FOLDER + "\\" + id);
+		FileUtility.deleteImageFiles(ImagesPaths.POST_PICTURE_FOLDER + "/" + id);
 	}
 
 }

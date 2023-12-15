@@ -40,16 +40,10 @@ public class Post {
 	@Column(name = "user_id")
 	private int userId;
 
-//	@ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-//	@JoinColumn(name = "user_id")
-//	private User user;
-
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
-//	private List<Comment> comments;
-
-	public Post(int userId, String content) {
+	public Post(int userId, String content,String picture) {
 		this.userId = userId;
 		this.content = content;
+		this.picture=picture;
 	}
 
 }

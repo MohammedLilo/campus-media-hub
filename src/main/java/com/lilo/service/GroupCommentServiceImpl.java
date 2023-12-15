@@ -1,5 +1,7 @@
 package com.lilo.service;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.lilo.entity.GroupComment;
 import com.lilo.repository.GroupCommentRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class GroupCommentServiceImpl implements GroupCommentService {
@@ -19,38 +23,56 @@ public class GroupCommentServiceImpl implements GroupCommentService {
 	}
 
 	@Override
-	public Page<GroupComment> findAllByGroupPostId(int groupPostId, int pageNumber, int pageSize, Sort sort) {
+	public Page<GroupComment> findAllByPostId(int postId, int pageNumber, int pageSize, Sort sort) {
 		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-		Page<GroupComment> page = groupCommentRepository.findByPostId(groupPostId, pageable);
-
-		return page;
+		return groupCommentRepository.findByPostId(postId, pageable);
 	}
 
 	@Override
-	public GroupComment findById(int GroupCommentId) {
-		GroupComment groupComment = groupCommentRepository.findById(GroupCommentId).get();
-		return groupComment;
+	public Page<GroupComment> findAllByUserId(int userId, int pageNumber, int pageSize, Sort sort) {
+		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+		return groupCommentRepository.findByUserId(userId, pageable);
 	}
 
 	@Override
-	public void save(GroupComment groupComment) {
-		groupCommentRepository.save(groupComment);
+	public GroupComment findByIdAndPostId(int id, int postId) {
+		GroupComment existingComment = groupCommentRepository.findById(id).get();
+		if (existingComment != null)
+			if (existingComment.getPostId() == postId)
+				return existingComment;
+			else
+				throw new IllegalArgumentException("requested comment should be associated with the specified post");
+		else
+			throw new EntityNotFoundException("cannot update a nonexisting comment");
 	}
 
 	@Override
-	public void updateContent(GroupComment groupComment, String newContent) {
-		groupComment.setContent(newContent);
-		groupCommentRepository.save(groupComment);
+	public GroupComment save(GroupComment groupComment) {
+		groupComment.setTimestamp(LocalDateTime.now());
+		return groupCommentRepository.save(groupComment);
 	}
 
 	@Override
-	public void deleteById(int groupCommentId) {
-		groupCommentRepository.deleteById(groupCommentId);
+	public void update(int id, int postId, GroupComment comment) {
+		GroupComment existingComment = groupCommentRepository.findById(id).get();
+
+		if (existingComment != null)
+			if (existingComment.getPostId() == postId) {
+				comment.setTimestamp(existingComment.getTimestamp());
+				groupCommentRepository.save(comment);
+			} else
+				throw new IllegalArgumentException("requested comment should be associated with the specified post");
+		else
+			throw new EntityNotFoundException("cannot update a nonexisting comment");
+
 	}
 
 	@Override
-	public void delete(GroupComment groupComment) {
-		groupCommentRepository.delete(groupComment);
+	public void deleteById(int id) {
+		if (groupCommentRepository.findById(id).isPresent())
+			groupCommentRepository.deleteById(id);
+		else
+			throw new EntityNotFoundException("cannot delete a nonexisting comment");
 	}
 
 }

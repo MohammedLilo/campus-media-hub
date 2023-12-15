@@ -1,5 +1,7 @@
 package com.lilo.controller;
 
+import java.io.IOException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,34 +35,44 @@ public class GroupController {
 	GroupsDTO getGroups(@RequestParam(name = "page", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
 		Page<Group> page = groupService.findAll(pageNumber, pageSize, Sort.unsorted());
-		GroupsDTO groups = new GroupsDTO(page.getContent(), page.isLast());
-		return groups;
+		return new GroupsDTO(page.getContent(), page.isLast());
+	}
+
+	@GetMapping("/groups/{id}")
+	Group getGroup(@PathVariable("id") int id) {
+		return groupService.findById(id);
 	}
 
 	@PostMapping("/groups")
 	void createGroup(@ModelAttribute Group group, @ModelAttribute MultipartFile imageFile) {
 		Group savedGroup = groupService.save(group);
-		updateGroup(savedGroup.getId(), savedGroup, imageFile);
+		if (imageFile != null && !imageFile.isEmpty()) {
+			updateGroup(savedGroup.getId(), savedGroup, imageFile);
+		}
 	}
 
 	@PutMapping("/groups/{id}")
 	void updateGroup(@PathVariable("id") int id, @ModelAttribute Group group, @ModelAttribute MultipartFile imageFile) {
 		String filePath = ImagesPaths.GROUP_PICTURE_FORLDER + "\\" + id;
-		group.setPicture(filePath);
-		groupService.update(id, group);
-		
-		FileUtility.saveImage(imageFile, filePath);
-	}
+		group.setTimestamp(groupService.findById(id).getTimestamp());
 
-	@GetMapping("/groups/{id}")
-	Group getGroup(@PathVariable("id") int id) {
-		Group group = groupService.findById(id);
-		return group;
+		if (imageFile != null && !imageFile.isEmpty()) {
+			group.setPicture(filePath);
+			try {
+				FileUtility.saveImage(imageFile, filePath);
+			} catch (IOException e) {
+				e.printStackTrace();
+				FileUtility.deleteImageFiles(filePath);
+			}
+		} else {
+			FileUtility.deleteImageFiles(filePath);
+		}
+		groupService.update(id, group);
 	}
 
 	@DeleteMapping("/groups/{id}")
 	void deleteGroup(@PathVariable("id") int id) {
 		groupService.deleteById(id);
-		FileUtility.deleteImageFiles(ImagesPaths.GROUP_PICTURE_FORLDER + "//" + id);
+		FileUtility.deleteImageFiles(ImagesPaths.GROUP_PICTURE_FORLDER + "/" + id);
 	}
 }

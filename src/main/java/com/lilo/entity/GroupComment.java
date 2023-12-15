@@ -38,13 +38,14 @@ public class GroupComment {
 	@Column(name = "timestamp")
 	private LocalDateTime timestamp;
 
+	@Column(name = "picture")
+	private String picture;
+
 	public GroupComment(String content, int userId, int postId, int groupId) {
-		super();
 		this.content = content;
 		this.postId = postId;
 		this.userId = userId;
 		this.groupId = groupId;
-		this.timestamp = LocalDateTime.now();
 	}
 
 	@Override

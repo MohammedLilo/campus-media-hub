@@ -1,5 +1,7 @@
 package com.lilo.controller;
 
+import java.io.IOException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
@@ -67,23 +69,23 @@ public class UserController {
 	@PutMapping("/users/{id}/user-detail")
 	void updateUserDetail(@PathVariable("id") int id, @ModelAttribute UserDetail userDetail,
 			@ModelAttribute MultipartFile imageFile) {
-		String filePath = ImagesPaths.PROFILE_PICTURE_FOLDER + "//" + id;
-
-		FileUtility.saveImage(imageFile, filePath);
-
 		User user = userService.findById(id);
-		userDetail.setProfilePicture(filePath);
+		String filePath = ImagesPaths.PROFILE_PICTURE_FOLDER + "//" + id;
 		user.setUserDetail(userDetail);
 
+		if (imageFile != null && !imageFile.isEmpty()) {
+			userDetail.setProfilePicture(filePath);
+			try {
+				FileUtility.saveImage(imageFile, filePath);
+			} catch (IOException e) {
+				e.printStackTrace();
+				FileUtility.deleteImageFiles(filePath);
+			}
+		} else {
+			FileUtility.deleteImageFiles(filePath);
+		}
 		userService.update(id, user);
 	}
-
-//	@PostMapping("/users/{id}/user-privacy")
-//	void createUserPrivacy(@PathVariable("id") int id, @ModelAttribute UserPrivacy userPrivacy) {
-//		User user = userService.findById(id);
-//		user.setUserPrivacy(userPrivacy);
-//		userService.update(id, user);
-//	}
 
 	@PutMapping("/users/{id}/user-privacy")
 	void updateUserPrivacy(@PathVariable("id") int id, @ModelAttribute("userPrivacy") UserPrivacy userPrivacy) {

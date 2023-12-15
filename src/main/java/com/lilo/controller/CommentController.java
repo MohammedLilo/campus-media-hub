@@ -1,5 +1,7 @@
 package com.lilo.controller;
 
+import java.io.IOException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
@@ -47,25 +49,36 @@ public class CommentController {
 	void createComment(@PathVariable("postId") int postId, @ModelAttribute(name = "comment") Comment comment,
 			@ModelAttribute(name = "imageFile") MultipartFile imageFile) {
 		Comment savedComment = commentService.save(comment);
-		updateComment(postId, savedComment.getId(), savedComment, imageFile);
-
+		if (imageFile != null && !imageFile.isEmpty()) {
+			updateComment(savedComment.getId(), postId, savedComment, imageFile);
+		}
 	}
 
 	@PutMapping("/posts/{postId}/comments/{id}")
-	void updateComment(@PathVariable("postId") int postId, @PathVariable("id") int id,
+	void updateComment(@PathVariable("id") int id, @PathVariable("postId") int postId,
 			@ModelAttribute(name = "comment") Comment comment,
 			@ModelAttribute(name = "imageFile") MultipartFile imageFile) {
 		comment.setTimestamp(commentService.findByIdAndPostId(id, postId).getTimestamp());
-
 		String filePath = ImagesPaths.COMMENT_PICTURE_FOLDER + "/" + comment.getId();
-		comment.setPicture(filePath);
 
+		if (imageFile != null && !imageFile.isEmpty()) {
+			comment.setPicture(filePath);
+			try {
+				FileUtility.saveImage(imageFile, filePath);
+			} catch (IOException e) {
+				e.printStackTrace();
+				FileUtility.deleteImageFiles(filePath);
+			}
+		} else {
+			FileUtility.deleteImageFiles(filePath);
+		}
 		commentService.update(id, postId, comment);
-		FileUtility.saveImage(imageFile, filePath);
+
 	}
 
 	@DeleteMapping("/posts/{postId}/comments/{id}")
 	void deleteComment(@PathVariable("id") int id) {
 		commentService.deleteById(id);
+		FileUtility.deleteImageFiles(ImagesPaths.COMMENT_PICTURE_FOLDER + "/" + id);
 	}
 }

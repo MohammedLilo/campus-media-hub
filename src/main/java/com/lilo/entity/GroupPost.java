@@ -1,16 +1,14 @@
 package com.lilo.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import jakarta.persistence.CascadeType;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,11 +38,8 @@ public class GroupPost {
 	private String picture;
 
 	@Column(name = "timestamp")
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private LocalDateTime timestamp;
-
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "post_id")
-	private List<GroupComment> comments;
 
 	public GroupPost(String content, int userId, int groupId) {
 		this.content = content;

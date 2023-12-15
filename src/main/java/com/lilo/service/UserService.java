@@ -53,7 +53,4 @@ public interface UserService {
 	@Transactional
 	public void deleteById(int id);
 
-	@Transactional
-	public void delete(User user);
-
 }

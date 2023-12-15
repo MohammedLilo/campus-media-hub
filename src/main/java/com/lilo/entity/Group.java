@@ -2,6 +2,8 @@ package com.lilo.entity;
 
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.lilo.enums.GroupPrivacyLevels;
 
 import jakarta.persistence.Column;
@@ -34,6 +36,7 @@ public class Group {
 	private String description;
 
 	@Column(name = "timestamp")
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private LocalDateTime timestamp;
 
 	@Enumerated(EnumType.STRING)
@@ -55,10 +58,8 @@ public class Group {
 //	private List<GroupJoinRequest> groupJoinRequests;
 
 	public Group(String name, String description, GroupPrivacyLevels privacyLevel) {
-		super();
 		this.name = name;
 		this.description = description;
-		this.timestamp = LocalDateTime.now();
 		this.privacyLevel = privacyLevel;
 	}
 

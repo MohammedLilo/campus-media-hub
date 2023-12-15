@@ -8,19 +8,19 @@ import com.lilo.entity.GroupComment;
 
 public interface GroupCommentService {
 
-	Page<GroupComment> findAllByGroupPostId(int groupPostId, int pageNumber, int pageSize, Sort sort);
+	Page<GroupComment> findAllByUserId(int userId, int pageNumber, int pageSize, Sort sort);
 
-	GroupComment findById(int GroupCommentId);
+	Page<GroupComment> findAllByPostId(int postId, int pageNumber, int pageSize, Sort sort);
+
+	public GroupComment findByIdAndPostId(int id, int postId);
 
 	@Transactional
-	void save(GroupComment groupComment);
+	GroupComment save(GroupComment groupComment);
 
 	@Transactional
-	void updateContent(GroupComment groupComment, String newContent);
+	public void update(int id, int postId, GroupComment comment);
 
 	@Transactional
 	void deleteById(int groupCommentId);
 
-	@Transactional
-	void delete(GroupComment groupComment);
 }

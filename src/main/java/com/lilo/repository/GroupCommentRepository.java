@@ -10,4 +10,6 @@ public interface GroupCommentRepository extends JpaRepository<GroupComment, Inte
 
 	Page<GroupComment> findByPostId(int postId, Pageable pageable);
 
+	Page<GroupComment> findByUserId(int userId, Pageable pageable);
+
 }

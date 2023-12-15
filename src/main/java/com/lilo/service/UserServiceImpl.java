@@ -76,24 +76,6 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findLastNameById(id);
 	}
 
-//	@Override
-//	public User findByEmailWithFriendships(String email) {
-//		User user = userRepository.findByEmailWithFriendships(email);
-//		return user;
-//	}
-//
-//	@Override
-//	public User findByEmailWithPosts(String email) {
-//		User user = userRepository.findByEmailWithPosts(email);
-//		return user;
-//	}
-//
-//	@Override
-//	public User findByEmailWithComments(String email) {
-//		User user = userRepository.findByEmailWithComments(email);
-//		return user;
-//	}
-
 	@Override
 	public void update(int id, User user) {
 		Optional<User> existingUserOptional = userRepository.findById(id);
@@ -146,12 +128,10 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void deleteById(int id) {
-		userRepository.deleteById(id);
-	}
-
-	@Override
-	public void delete(User user) {
-		userRepository.delete(user);
+		if (userRepository.findById(id).isPresent())
+			userRepository.deleteById(id);
+		else
+			throw new EntityNotFoundException("cannot delete a nonexisting User");
 	}
 
 }

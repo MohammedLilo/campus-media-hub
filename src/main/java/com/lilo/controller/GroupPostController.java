@@ -1,5 +1,7 @@
 package com.lilo.controller;
 
+import java.io.IOException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
@@ -29,44 +31,54 @@ public class GroupPostController {
 		this.groupPostService = groupPostService;
 	}
 
-	@GetMapping("/groups/{groupId}/group-post")
+	@GetMapping("/groups/{groupId}/group-posts")
 	GroupPostsDTO getGroupPosts(@PathVariable("groupId") int groupId,
 			@RequestParam(name = "page", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
 		Page<GroupPost> page = groupPostService.findAllByGroupId(groupId, pageNumber, pageSize,
-				Sort.by(Order.desc("postTimestamp")));
-		GroupPostsDTO groupPosts = new GroupPostsDTO(page.getContent(), page.isLast());
-		return groupPosts;
+				Sort.by(Order.desc("timestamp")));
+		return new GroupPostsDTO(page.getContent(), page.isLast());
 	}
 
-	@GetMapping("/groups/{groupId}/group-post/{id}")
+	@GetMapping("/groups/{groupId}/group-posts/{id}")
 	GroupPost getGroupPost(@PathVariable("id") int id) {
-		GroupPost groupPost = groupPostService.findById(id);
-		return groupPost;
+		return groupPostService.findById(id);
 	}
 
-	@PostMapping("/groups/{groupId}/group-post")
+	@PostMapping("/groups/{groupId}/group-posts")
 	void createPost(@ModelAttribute("groupPost") GroupPost groupPost,
 			@ModelAttribute("imageFile") MultipartFile imageFile) {
 		GroupPost savedGroupPost = groupPostService.save(groupPost);
-		updateGroupPost(savedGroupPost.getId(), savedGroupPost, imageFile);
+		if (imageFile != null && !imageFile.isEmpty()) {
+			updateGroupPost(savedGroupPost.getId(), savedGroupPost, imageFile);
+		}
 	}
 
-	@PutMapping("/groups/{groupId}/group-post/{id}")
+	@PutMapping("/groups/{groupId}/group-posts/{id}")
 	void updateGroupPost(@PathVariable("id") int id, @ModelAttribute("groupPost") GroupPost groupPost,
 			MultipartFile imageFile) {
 		String filePath = ImagesPaths.GROUP_POST_PICTURE_FOLDER + "\\" + id;
-		groupPost.setPicture(filePath);
+		groupPost.setTimestamp(groupPostService.findById(id).getTimestamp());
+
+		if (imageFile != null && !imageFile.isEmpty()) {
+			groupPost.setPicture(filePath);
+			try {
+				FileUtility.saveImage(imageFile, filePath);
+			} catch (IOException e) {
+				e.printStackTrace();
+				FileUtility.deleteImageFiles(filePath);
+			}
+		} else {
+			FileUtility.deleteImageFiles(filePath);
+		}
 		groupPostService.update(id, groupPost);
-		FileUtility.saveImage(imageFile, filePath);
 
 	}
 
-	@DeleteMapping("/groups/{groupId}/group-post/{id}")
+	@DeleteMapping("/groups/{groupId}/group-posts/{id}")
 	void deleteGroupPost(@PathVariable("id") int id) {
 		groupPostService.deleteById(id);
-		FileUtility.deleteImageFiles(ImagesPaths.GROUP_POST_PICTURE_FOLDER + "\\" + id);
-
+		FileUtility.deleteImageFiles(ImagesPaths.GROUP_POST_PICTURE_FOLDER + "/" + id);
 	}
 
 }
