@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lilo.dto.FriendshipRequestsDTO;
 import com.lilo.entity.FriendshipRequest;
+import com.lilo.exception.EllementAlreadyExistsException;
+import com.lilo.exception.UnacceptableFriendshipRequestException;
 import com.lilo.service.FriendshipRequestService;
 
 @RestController
@@ -25,11 +27,11 @@ public class FriendshipRequestController {
 	}
 
 	@GetMapping("/friendship-requests")
-	FriendshipRequestsDTO getFriendshipRequests(@RequestParam("recepientId") int recepientId,
+	FriendshipRequestsDTO getFriendshipRequests(@RequestParam("recipientId") int recipientId,
 			@RequestParam(name = "page", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
-		Page<FriendshipRequest> page = friendshipRequestService.findPendingByRecipientId(recepientId, pageNumber,
-				pageSize, Sort.by(Order.desc("requestTimestamp")));
+		Page<FriendshipRequest> page = friendshipRequestService.findByRecipientId(recipientId, pageNumber, pageSize,
+				Sort.by(Order.desc("timestamp")));
 		return new FriendshipRequestsDTO(page.getContent(), page.isLast());
 
 	}
@@ -40,8 +42,9 @@ public class FriendshipRequestController {
 	}
 
 	@PostMapping("/friendship-requests")
-	void createFriendshipRequest(@RequestParam("receiverId") int receiverId, @RequestParam("senderId") int senderId) {
-		friendshipRequestService.requestFriendship(senderId, receiverId);
+	void createFriendshipRequest(@RequestParam("recipientId") int recipientId, @RequestParam("senderId") int senderId)
+			throws UnacceptableFriendshipRequestException, EllementAlreadyExistsException {
+		friendshipRequestService.requestFriendship(senderId, recipientId);
 	}
 
 	@PutMapping("/friendship-requests/{id}/approve")

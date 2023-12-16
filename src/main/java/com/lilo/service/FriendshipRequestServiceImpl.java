@@ -1,9 +1,9 @@
 package com.lilo.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,51 +11,35 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.lilo.entity.FriendshipRequest;
-import com.lilo.enums.RequestStatus;
+import com.lilo.exception.EllementAlreadyExistsException;
+import com.lilo.exception.MismatchedFriendshipRequestAndRecipientId;
+import com.lilo.exception.UnacceptableFriendshipRequestException;
 import com.lilo.repository.FriendshipRequestRepository;
 
 @Service
 public class FriendshipRequestServiceImpl implements FriendshipRequestService {
 
-	private FriendshipRequestRepository friendshipRequestRepository;
-	private FriendshipService friendshipService;
+	private final FriendshipRequestRepository friendshipRequestRepository;
+	private final FriendshipService friendshipService;
+	private final BlockService blockService;
 
 	public FriendshipRequestServiceImpl(FriendshipRequestRepository friendshipRequestRepository,
-			FriendshipService friendshipService) {
+			@Lazy FriendshipService friendshipService, @Lazy BlockService blockService) {
 		this.friendshipRequestRepository = friendshipRequestRepository;
 		this.friendshipService = friendshipService;
+		this.blockService = blockService;
 	}
 
 	@Override
-	public List<FriendshipRequest> findAllBySenderId(int senderId) {
-		List<FriendshipRequest> requests = friendshipRequestRepository.findBySenderIdAndStatus(senderId,
-				RequestStatus.PENDING);
-		return requests;
-	}
-
-	@Override
-	public List<FriendshipRequest> findAllByRecipientId(int Recipient) {
-		List<FriendshipRequest> requests = friendshipRequestRepository.findByRecipientIdAndStatus(Recipient,
-				RequestStatus.PENDING);
-		return requests;
-	}
-
-	@Override
-	public Page<FriendshipRequest> findPendingBySenderId(int senderId, int pageNumber, int pageSize, Sort sort) {
+	public Page<FriendshipRequest> findBySenderId(int senderId, int pageNumber, int pageSize, Sort sort) {
 		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-		Page<FriendshipRequest> page = friendshipRequestRepository.findBySenderIdAndStatus(senderId,
-				RequestStatus.PENDING, pageable);
-
-		return page;
+		return friendshipRequestRepository.findBySenderId(senderId, pageable);
 	}
 
 	@Override
-	public Page<FriendshipRequest> findPendingByRecipientId(int recipientId, int pageNumber, int pageSize, Sort sort) {
+	public Page<FriendshipRequest> findByRecipientId(int recipientId, int pageNumber, int pageSize, Sort sort) {
 		Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
-		Page<FriendshipRequest> page = friendshipRequestRepository.findByRecipientIdAndStatus(recipientId,
-				RequestStatus.PENDING, pageable);
-
-		return page;
+		return friendshipRequestRepository.findByRecipientId(recipientId, pageable);
 	}
 
 	@Override
@@ -64,55 +48,51 @@ public class FriendshipRequestServiceImpl implements FriendshipRequestService {
 	}
 
 	@Override
-	public FriendshipRequest findByIdAndRecipientId(int id, int recipientId) {
-		FriendshipRequest existingFriendshipRequest = friendshipRequestRepository.findById(id).get();
+	public FriendshipRequest findByIdAndRecipientId(int id, int recipientId)
+			throws MismatchedFriendshipRequestAndRecipientId {
+		FriendshipRequest existingFriendshipRequest = friendshipRequestRepository.findById(id).orElse(null);
 
 		if (existingFriendshipRequest != null)
 			if (existingFriendshipRequest.getRecipientId() == recipientId)
 				return existingFriendshipRequest;
 			else
-				throw new IllegalArgumentException("requested friendshipRequest doesn't match with the recipientId");
+				throw new MismatchedFriendshipRequestAndRecipientId(
+						"requested friendshipRequest doesn't match with the recipientId");
 		else
-			throw new NoSuchElementException("No such element");
+			throw new NoSuchElementException("requested friendshipRequest not found.");
 	}
 
 	@Override
-	public void requestFriendship(int senderId, int recipientId) {
-		friendshipRequestRepository.save(new FriendshipRequest(senderId, recipientId));
-	}
+	public void requestFriendship(int senderId, int recipientId)
+			throws UnacceptableFriendshipRequestException, EllementAlreadyExistsException {
+		if (blockService.isAnyBlocked(senderId, recipientId))
+			throw new UnacceptableFriendshipRequestException(
+					"cannot send a friendship request because one of the two users is blocked by the other.");
 
-	@Override
-	public void requestFriendship(FriendshipRequest friendshipRequest) {
-		friendshipRequestRepository.save(friendshipRequest);
+		if (friendshipRequestRepository.findBySenderIdAndRecipientId(senderId, recipientId) != null)
+			throw new EllementAlreadyExistsException("A friendship request already exists.");
 
+		friendshipRequestRepository.save(new FriendshipRequest(senderId, recipientId, LocalDateTime.now()));
 	}
 
 	@Override
 	public void approve(int id) {
-		FriendshipRequest existingFriendshipRequest = friendshipRequestRepository.findById(id).get();
-
-		if (existingFriendshipRequest.getDecisionTimestamp() == null) {
-			existingFriendshipRequest.setDecisionTimestamp(LocalDateTime.now());
-			existingFriendshipRequest.setStatus(RequestStatus.APPROVED);
-
-			friendshipRequestRepository.save(existingFriendshipRequest);
-			friendshipService.save(existingFriendshipRequest.getSenderId(), existingFriendshipRequest.getRecipientId());
-		} else
-			throw new RuntimeException();
-
+		FriendshipRequest existingFriendshipRequest = friendshipRequestRepository.findById(id).orElseThrow();
+		friendshipService.save(existingFriendshipRequest.getSenderId(), existingFriendshipRequest.getRecipientId());
+		deleteById(id);
 	}
 
 	@Override
 	public void reject(int id) {
-		FriendshipRequest existingFriendshipRequest = friendshipRequestRepository.findById(id).get();
-
-		if (existingFriendshipRequest.getDecisionTimestamp() == null) {
-			existingFriendshipRequest.setDecisionTimestamp(LocalDateTime.now());
-			existingFriendshipRequest.setStatus(RequestStatus.REJECTED);
-
-			friendshipRequestRepository.save(existingFriendshipRequest);
-		} else
-			throw new RuntimeException();
+		FriendshipRequest existingFriendshipRequest = friendshipRequestRepository.findById(id).orElseThrow();
+		friendshipRequestRepository.save(existingFriendshipRequest);
+		deleteById(id);
 	}
 
+	public void deleteById(int id) {
+		if (friendshipRequestRepository.findById(id).isPresent())
+			friendshipRequestRepository.deleteById(id);
+		else
+			throw new NoSuchElementException("cannot delete a non existing FriendshipRequest");
+	}
 }
