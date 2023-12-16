@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.lilo.entity.FriendshipRequest;
 import com.lilo.exception.EllementAlreadyExistsException;
+import com.lilo.exception.FriendshipAlreadyExistsException;
 import com.lilo.exception.MismatchedFriendshipRequestAndRecipientId;
 import com.lilo.exception.UnacceptableFriendshipRequestException;
 
@@ -21,7 +22,7 @@ public interface FriendshipRequestService {
 
 	@Transactional
 	void requestFriendship(int senderId, int recipientId)
-			throws UnacceptableFriendshipRequestException, EllementAlreadyExistsException;
+			throws UnacceptableFriendshipRequestException, EllementAlreadyExistsException, FriendshipAlreadyExistsException;
 
 	@Transactional
 	void approve(int id);

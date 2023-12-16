@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.lilo.entity.FriendshipRequest;
 import com.lilo.exception.EllementAlreadyExistsException;
+import com.lilo.exception.FriendshipAlreadyExistsException;
 import com.lilo.exception.MismatchedFriendshipRequestAndRecipientId;
 import com.lilo.exception.UnacceptableFriendshipRequestException;
 import com.lilo.repository.FriendshipRequestRepository;
@@ -64,14 +65,17 @@ public class FriendshipRequestServiceImpl implements FriendshipRequestService {
 
 	@Override
 	public void requestFriendship(int senderId, int recipientId)
-			throws UnacceptableFriendshipRequestException, EllementAlreadyExistsException {
+			throws UnacceptableFriendshipRequestException, EllementAlreadyExistsException, FriendshipAlreadyExistsException {
 		if (blockService.isAnyBlocked(senderId, recipientId))
 			throw new UnacceptableFriendshipRequestException(
 					"cannot send a friendship request because one of the two users is blocked by the other.");
 
 		if (friendshipRequestRepository.findBySenderIdAndRecipientId(senderId, recipientId) != null)
 			throw new EllementAlreadyExistsException("A friendship request already exists.");
-
+	
+		if (friendshipService.findByUserIdAndFriendId(senderId, recipientId) != null)
+			throw new FriendshipAlreadyExistsException("cannot create a friendship request because a friendship already exists between the two users.");
+		
 		friendshipRequestRepository.save(new FriendshipRequest(senderId, recipientId, LocalDateTime.now()));
 	}
 

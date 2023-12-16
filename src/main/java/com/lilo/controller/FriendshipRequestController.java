@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lilo.dto.FriendshipRequestsDTO;
 import com.lilo.entity.FriendshipRequest;
 import com.lilo.exception.EllementAlreadyExistsException;
+import com.lilo.exception.FriendshipAlreadyExistsException;
 import com.lilo.exception.UnacceptableFriendshipRequestException;
 import com.lilo.service.FriendshipRequestService;
 
@@ -43,7 +44,7 @@ public class FriendshipRequestController {
 
 	@PostMapping("/friendship-requests")
 	void createFriendshipRequest(@RequestParam("recipientId") int recipientId, @RequestParam("senderId") int senderId)
-			throws UnacceptableFriendshipRequestException, EllementAlreadyExistsException {
+			throws UnacceptableFriendshipRequestException, EllementAlreadyExistsException, FriendshipAlreadyExistsException {
 		friendshipRequestService.requestFriendship(senderId, recipientId);
 	}
 
