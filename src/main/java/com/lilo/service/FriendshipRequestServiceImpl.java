@@ -49,33 +49,35 @@ public class FriendshipRequestServiceImpl implements FriendshipRequestService {
 	}
 
 	@Override
-	public FriendshipRequest findByIdAndRecipientId(int id, int recipientId)
-			throws MismatchedFriendshipRequestAndRecipientId {
-		FriendshipRequest existingFriendshipRequest = friendshipRequestRepository.findById(id).orElse(null);
-
-		if (existingFriendshipRequest != null)
-			if (existingFriendshipRequest.getRecipientId() == recipientId)
-				return existingFriendshipRequest;
-			else
-				throw new MismatchedFriendshipRequestAndRecipientId(
-						"requested friendshipRequest doesn't match with the recipientId");
-		else
-			throw new NoSuchElementException("requested friendshipRequest not found.");
+	public FriendshipRequest findBySenderIdAndRecipientId(int senderId, int recipientId) {
+		return friendshipRequestRepository.findBySenderIdAndRecipientId(senderId, recipientId);
 	}
 
 	@Override
-	public void requestFriendship(int senderId, int recipientId)
-			throws UnacceptableFriendshipRequestException, EllementAlreadyExistsException, FriendshipAlreadyExistsException {
+	public FriendshipRequest findByIdAndRecipientId(int id, int recipientId)
+			throws MismatchedFriendshipRequestAndRecipientId {
+		FriendshipRequest existingFriendshipRequest = friendshipRequestRepository.findById(id).orElseThrow();
+		if (existingFriendshipRequest.getRecipientId() == recipientId)
+			return existingFriendshipRequest;
+		else
+			throw new MismatchedFriendshipRequestAndRecipientId(
+					"requested friendshipRequest doesn't match with the recipientId");
+	}
+
+	@Override
+	public void requestFriendship(int senderId, int recipientId) throws UnacceptableFriendshipRequestException,
+			EllementAlreadyExistsException, FriendshipAlreadyExistsException {
 		if (blockService.isAnyBlocked(senderId, recipientId))
 			throw new UnacceptableFriendshipRequestException(
 					"cannot send a friendship request because one of the two users is blocked by the other.");
 
 		if (friendshipRequestRepository.findBySenderIdAndRecipientId(senderId, recipientId) != null)
 			throw new EllementAlreadyExistsException("A friendship request already exists.");
-	
+
 		if (friendshipService.findByUserIdAndFriendId(senderId, recipientId) != null)
-			throw new FriendshipAlreadyExistsException("cannot create a friendship request because a friendship already exists between the two users.");
-		
+			throw new FriendshipAlreadyExistsException(
+					"cannot create a friendship request because a friendship already exists between the two users.");
+
 		friendshipRequestRepository.save(new FriendshipRequest(senderId, recipientId, LocalDateTime.now()));
 	}
 
@@ -98,5 +100,10 @@ public class FriendshipRequestServiceImpl implements FriendshipRequestService {
 			friendshipRequestRepository.deleteById(id);
 		else
 			throw new NoSuchElementException("cannot delete a non existing FriendshipRequest");
+	}
+
+	@Override
+	public void deleteBySenderIdAndRecipientId(int senderId, int recipientId) {
+		friendshipRequestRepository.deleteBySenderIdAndRecipientId(senderId, recipientId);
 	}
 }

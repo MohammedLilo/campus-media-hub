@@ -76,11 +76,7 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public void deleteById(int id) {
-		Optional<Post> existingPost = postRepository.findById(id);
-		if (existingPost.isPresent())
-			postRepository.deleteById(id);
-		else
-			throw new NoSuchElementException("cannot delete a nonexisting element");
+		postRepository.deleteById(id);
 	}
 
 }

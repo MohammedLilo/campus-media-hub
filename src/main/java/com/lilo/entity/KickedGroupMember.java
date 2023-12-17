@@ -32,14 +32,13 @@ public class KickedGroupMember {
 	private int groupId;
 
 	@Column(name = "timestamp")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private LocalDateTime timestamp;
 
-	public KickedGroupMember(int userId, int groupId) {
-		super();
+	public KickedGroupMember(int userId, int groupId, LocalDateTime timestamp) {
 		this.userId = userId;
 		this.groupId = groupId;
-		this.timestamp = LocalDateTime.now();
+		this.timestamp = timestamp;
 	}
 
 	@Override

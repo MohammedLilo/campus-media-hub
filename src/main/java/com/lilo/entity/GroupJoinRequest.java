@@ -2,12 +2,8 @@ package com.lilo.entity;
 
 import java.time.LocalDateTime;
 
-import com.lilo.enums.RequestStatus;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,22 +32,16 @@ public class GroupJoinRequest {
 	@Column(name = "timestamp")
 	private LocalDateTime timestamp;
 
-	@Column(name = "decision_timestamp")
-	private LocalDateTime decisionTimestamp;
-
-	@Enumerated(EnumType.STRING)
-	@Column(name = "status")
-	private RequestStatus status;
-
-	public GroupJoinRequest(int userId, int groupId) {
+	public GroupJoinRequest(int userId, int groupId, LocalDateTime timestamp) {
 		this.userId = userId;
 		this.groupId = groupId;
+		this.timestamp = timestamp;
 	}
 
 	@Override
 	public String toString() {
 		return "GroupJoinRequest [id=" + id + ", groupId=" + groupId + ", userId=" + userId + ", requestTimestamp="
-				+ timestamp + ", decisionTimestamp=" + decisionTimestamp + ", status=" + status + "]";
+				+ timestamp + ", decisionTimestamp=";
 	}
 
 }

@@ -27,8 +27,7 @@ public class GroupPromotionsController {
 			@RequestParam(name = "page", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "20") int pageSize) {
 		Page<GroupPromotion> page = groupPromotionService.findAllByGroupId(groupId, pageNumber, pageSize,
-				Sort.by(Order.desc("promotionTimestamp")));
-
+				Sort.by(Order.desc("timestamp")));
 		return new GroupPromotionsDTO(page.getContent(), page.isLast());
 	}
 

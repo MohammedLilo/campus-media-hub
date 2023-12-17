@@ -35,11 +35,10 @@ public class Block {
 	@DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
 	private LocalDateTime timestamp;
 
-	public Block(int userId, int blockedUserId) {
-		super();
+	public Block(int userId, int blockedUserId, LocalDateTime timestamp) {
 		this.userId = userId;
 		this.blockedUserId = blockedUserId;
-		this.timestamp = LocalDateTime.now();
+		this.timestamp = timestamp;
 	}
 
 }

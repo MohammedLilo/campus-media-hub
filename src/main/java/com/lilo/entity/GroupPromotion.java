@@ -46,12 +46,13 @@ public class GroupPromotion {
 	@Column(name = "timestamp")
 	private LocalDateTime timestamp;
 
-	public GroupPromotion(int groupId, int promoterUserId, int promotedUserId, GroupRoles newRole) {
+	public GroupPromotion(int groupId, int promoterUserId, int promotedUserId, GroupRoles newRole,
+			LocalDateTime timestamp) {
 		this.groupId = groupId;
 		this.promoterUserId = promoterUserId;
 		this.promotedUserId = promotedUserId;
 		this.newRole = newRole;
-		this.timestamp = LocalDateTime.now();
+		this.timestamp = timestamp;
 	}
 
 }

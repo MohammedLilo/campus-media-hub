@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.lilo.entity.Block;
+import com.lilo.exception.IllegalOperationException;
 
 public interface BlockService {
 
@@ -21,7 +22,7 @@ public interface BlockService {
 	public Block findByUserIdAndBlockedUserId(int userId, int blockedUserId);
 
 	@Transactional
-	public void save(int userId, int blockedUserId);
+	public void save(int userId, int blockedUserId) throws IllegalOperationException;
 
 	@Transactional
 	public void deleteById(int id);

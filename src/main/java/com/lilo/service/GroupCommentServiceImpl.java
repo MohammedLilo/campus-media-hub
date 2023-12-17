@@ -69,10 +69,7 @@ public class GroupCommentServiceImpl implements GroupCommentService {
 
 	@Override
 	public void deleteById(int id) {
-		if (groupCommentRepository.findById(id).isPresent())
-			groupCommentRepository.deleteById(id);
-		else
-			throw new EntityNotFoundException("cannot delete a nonexisting comment");
+		groupCommentRepository.deleteById(id);
 	}
 
 }

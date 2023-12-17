@@ -128,10 +128,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void deleteById(int id) {
-		if (userRepository.findById(id).isPresent())
-			userRepository.deleteById(id);
-		else
-			throw new EntityNotFoundException("cannot delete a nonexisting User");
+		userRepository.deleteById(id);
 	}
 
 }

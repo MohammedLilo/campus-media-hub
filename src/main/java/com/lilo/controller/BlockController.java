@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.lilo.dto.BlocksDTO;
 import com.lilo.entity.Block;
+import com.lilo.exception.IllegalOperationException;
 import com.lilo.service.BlockService;
 
 @RestController
@@ -29,19 +30,17 @@ public class BlockController {
 			@RequestParam(name = "page", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "10") int pageSize) {
 		Page<Block> page = blockService.findAllByUserId(userId, pageNumber, pageSize,
-				Sort.by(Order.desc("blockTimestamp")));
-		BlocksDTO blocks = new BlocksDTO(page.getContent(), page.isLast());
-		return blocks;
+				Sort.by(Order.desc("timestamp")));
+		return new BlocksDTO(page.getContent(), page.isLast());
 	}
 
 	@GetMapping("/users/{userId}/blocks/{id}")
 	Block getBlock(@PathVariable("userId") int userId, @PathVariable("id") int id) {
-		Block requestedBlock = blockService.findByIdAndUserId(id, userId);
-		return requestedBlock;
+		return blockService.findByIdAndUserId(id, userId);
 	}
 
 	@PostMapping("/users/{userId}/blocks")
-	void createBlock(@PathVariable("userId") int userId, @RequestParam("blockedUserId") int blockedUserId) {
+	void createBlock(@PathVariable("userId") int userId, @RequestParam("blockedUserId") int blockedUserId) throws IllegalOperationException {
 		blockService.save(userId, blockedUserId);
 	}
 

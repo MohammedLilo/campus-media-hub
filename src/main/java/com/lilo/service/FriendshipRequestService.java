@@ -16,13 +16,15 @@ public interface FriendshipRequestService {
 
 	Page<FriendshipRequest> findByRecipientId(int recipientId, int pageNumber, int pageSize, Sort sort);
 
-	FriendshipRequest findByIdAndRecipientId(int id, int recipientId) throws MismatchedFriendshipRequestAndRecipientId;
-
 	FriendshipRequest findById(int id);
 
+	FriendshipRequest findByIdAndRecipientId(int id, int recipientId) throws MismatchedFriendshipRequestAndRecipientId;
+
+	FriendshipRequest findBySenderIdAndRecipientId(int senderId, int recipientId);
+
 	@Transactional
-	void requestFriendship(int senderId, int recipientId)
-			throws UnacceptableFriendshipRequestException, EllementAlreadyExistsException, FriendshipAlreadyExistsException;
+	void requestFriendship(int senderId, int recipientId) throws UnacceptableFriendshipRequestException,
+			EllementAlreadyExistsException, FriendshipAlreadyExistsException;
 
 	@Transactional
 	void approve(int id);
@@ -32,4 +34,8 @@ public interface FriendshipRequestService {
 
 	@Transactional
 	void deleteById(int id);
+
+	@Transactional
+	void deleteBySenderIdAndRecipientId(int senderId, int recipientId);
+
 }

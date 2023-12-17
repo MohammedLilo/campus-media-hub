@@ -25,35 +25,32 @@ public class GroupMembershipController {
 		this.groupMembershipService = groupMembershipService;
 	}
 
-	@GetMapping("/groups/{groupId}/group-memberships")
-	GroupMembershipsDTO getGroupMemberships(@PathVariable("groupId") int groupId,
+	@GetMapping("/group-memberships")
+	GroupMembershipsDTO getGroupMemberships(@RequestParam("groupId") int groupId,
 			@RequestParam(name = "page", defaultValue = "0") int pageNumber,
 			@RequestParam(name = "pageSize", defaultValue = "20") int pageSize) {
 		Page<GroupMembership> page = groupMembershipService.findAllByGroupId(groupId, pageNumber, pageSize,
-				Sort.by(Order.asc("firstName"), Order.asc("lastName")));
-		GroupMembershipsDTO memberships = new GroupMembershipsDTO(page.getContent(), page.isLast());
-
-		return memberships;
+				Sort.by(Order.desc("timestamp")));
+		return new GroupMembershipsDTO(page.getContent(), page.isLast());
 	}
 
-	@GetMapping("/groups/{groupId}/group-memberships/{id}")
+	@GetMapping("/group-memberships/{id}")
 	GroupMembership getGroupMembership(@PathVariable("id") int id) {
-		GroupMembership requestedMembership = groupMembershipService.findById(id);
-		return requestedMembership;
+		return groupMembershipService.findById(id);
 	}
 
-	@PutMapping("/groups/{groupId}/group-memberships/{id}/promote")
+	@PutMapping("/group-memberships/{id}/promote")
 	void promoteGroupMembership(@PathVariable("id") int id, @RequestParam("promoterId") int promoterId,
 			@RequestParam("newRole") GroupRoles newRole) {
 		groupMembershipService.promote(id, promoterId, newRole);
 	}
 
-	@DeleteMapping("/groups/{groupId}/group-memberships/{id}/kick")
+	@DeleteMapping("/group-memberships/{id}/kick")
 	void kickGroupMembership(@PathVariable("id") int id) {
 		groupMembershipService.kick(id);
 	}
 
-	@DeleteMapping("/groups/{groupId}/group-memberships/{id}")
+	@DeleteMapping("/group-memberships/{id}/leave")
 	void leaveGroupMembership(@PathVariable("id") int id) {
 		groupMembershipService.leave(id);
 	}

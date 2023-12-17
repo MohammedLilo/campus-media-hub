@@ -17,6 +17,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Friendship {
 
+	@Override
+	public String toString() {
+		return "Friendship [id=" + id + ", userId=" + userId + ", friendId=" + friendId + "]";
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
