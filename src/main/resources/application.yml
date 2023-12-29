@@ -7,6 +7,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+ 
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: chat_db
+      
   main:
     banner-mode: off
   servlet:

@@ -1,33 +1,38 @@
 package com.lilo.service;
 
-import java.util.List;
-
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.lilo.entity.Chat;
+import com.lilo.document.Chat;
 
 public interface ChatService {
 
-	public List<Chat> findAllByUserId(int userId);
+	Page<Chat> findAllByUserId(int userId, int pageNumber, int pageSize, Sort sort);
 
-	Page<Chat> findByUserId(int userId, int pageNumber, int pageSize, Sort sort);
+	Chat findById(ObjectId id);
 
-	public Chat findById(int id);
-
-	@Transactional
-	public void save(Chat chat);
+	Chat findBySenderIdAndRecipientId(int senderId, int recipientId);
 
 	@Transactional
-	void updateTimestamp(Chat chat);
+	void save(Chat chat);
 
-	@Transactional
-	public void updateTimestampById(int id);
-
-	@Transactional
-	public void deleteById(int id);
-
-	@Transactional
-	public void delete(Chat chat);
+//	/**
+//	 * Deletes the chat and its messages, It deletes Deletes the chat and the
+//	 * reverse chat (with their messages).
+//	 * 
+//	 * @param chat
+//	 */
+//	@Transactional
+//	void deleteById(ObjectId id);
+//
+//	/**
+//	 * Deletes the chat and its messages, It deletes Deletes the chat and the
+//	 * reverse chat (with their messages).
+//	 * 
+//	 * @param chat
+//	 */
+//	@Transactional
+//	void delete(Chat chat);
 }

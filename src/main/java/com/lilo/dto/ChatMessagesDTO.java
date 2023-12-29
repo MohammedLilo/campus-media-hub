@@ -12,9 +12,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class MessagesDTO {
-	private List<ChatMessage> messages;
+public class ChatMessagesDTO {
+
+	private List<ChatMessage> chatMessages;
+
 	@JsonProperty("isLast")
 	private boolean isLast;
-
 }
